@@ -1,0 +1,38 @@
+{
+  "name": "geekbang",
+  "version": "1.0.0",
+  "description": "「前端进阶训练营」第 12 期作业",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "release": "standard-version && git push --follow-tags origin dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lmw6412036/geekbang.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lmw6412036/geekbang/issues"
+  },
+  "homepage": "https://github.com/lmw6412036/geekbang#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^13.1.0",
+    "@commitlint/config-conventional": "^13.1.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "husky": "^4.2.5",
+    "standard-version": "^9.3.1"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "git add ."
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  }
+}

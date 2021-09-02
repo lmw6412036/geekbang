@@ -1,0 +1,16 @@
+{
+  "types": [
+    {"type": "chore", "section":"其他修改, 比如改变构建流程、或者增加依赖库、工具等", "hidden": false},
+    {"type": "revert", "section":"回滚到上一个版本", "hidden": false},
+    {"type": "feat", "section": "新特性、新功能", "hidden": false},
+    {"type": "fix", "section": "Bug修复", "hidden": false},
+    {"type": "improvement", "section": "新特性", "hidden": false},
+    {"type": "docs", "section":"文档修改", "hidden": false},
+    {"type": "style", "section":"代码格式修改", "hidden": false},
+    {"type": "refactor", "section":"代码重构", "hidden": false},
+    {"type": "perf", "section":"优化相关，比如提升性能、体验", "hidden": false},
+    {"type": "test", "section":"测试用例修改", "hidden": false},
+    {"type": "build", "section":"编译相关的修改，例如发布版本、对项目构建或者依赖的改动", "hidden": false},
+    {"type": "ci", "section":"持续集成修改", "hidden":false}
+  ]
+}
