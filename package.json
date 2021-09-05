@@ -1,11 +1,11 @@
 {
   "name": "geekbang",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "「前端进阶训练营」第 12 期作业",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "release": "standard-version && git push --follow-tags origin dev"
+    "release": "standard-version && git push --follow-tags origin master"
   },
   "repository": {
     "type": "git",
