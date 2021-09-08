@@ -11,9 +11,14 @@ http.createServer((request, response) => {
             response.end('<html lang="en">' +
                 '<head>' +
                 '<title>demo</title>' +
+                '<style type="text/css">' +
+                'h1{color: red}' +
+                'p span{color: blue}' +
+                '</style>' +
                 '</head>' +
                 '<body>' +
                 '<h1>表TI</h1>' +
+                '<p><span>在呢</span></p>' +
                 '</body>' +
                 '</html>')
         })

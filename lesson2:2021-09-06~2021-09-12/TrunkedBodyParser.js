@@ -12,6 +12,7 @@ class TrunkedBodyParser {
     }
 
     receiveChar(char) {
+        console.log('html-->', char, this.length);
         if (this.current === this.WATTING_LENGTH) {
             if (char === '\r') {
                 if (this.length === 0) {
