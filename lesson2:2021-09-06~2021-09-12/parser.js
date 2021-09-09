@@ -1,19 +1,38 @@
 const EOF = Symbol('EOF');
 const isAlphabet = c => /^[a-zA-Z]$/.test(c);
 const isBlank = c => /^[\f\t\n ]$/.test(c);
-let currentToken
+let currentToken = null
+
+function emit(token) {
+    console.log(token);
+}
 
 function data(c) {
     console.log('char', c);
     if (c === '<') return tagOpen;
-    else if (c === EOF) return;
-    else return data;
+    else if (c === EOF) {
+        emit({
+            type: 'EOF'
+        });
+        return;
+    } else {
+        emit({
+            type: 'text',
+            content: c
+        });
+        return data;
+    }
 }
 
 function tagOpen(c) {
     if (c === '/') return endTagOpen;
-    else if (isAlphabet(c)) return tagName(c);
-    else return data;
+    else if (isAlphabet(c)) {
+        currentToken = {
+            type: "startTag",
+            tagName: ''
+        }
+        return tagName(c);
+    } else return data;
 }
 
 function endTagOpen(c) {
@@ -36,8 +55,13 @@ function tagName(c) {
     if (isBlank(c)) {
         return beforeAttributeName;
     } else if (c === '/') return selfClosingStartTag;
-    else if (isAlphabet(c)) return tagName;
-    else if (c === '>') return data
+    else if (isAlphabet(c)) {
+        currentToken.tagName += c;
+        return tagName;
+    } else if (c === '>') {
+        emit(currentToken);
+        return data
+    }
     return tagName;
 }
 

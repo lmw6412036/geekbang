@@ -8,19 +8,19 @@ http.createServer((request, response) => {
             response.setHeader("Content-Type", "text/html");
             response.setHeader("X-Token", "lmw");
             response.writeHead(200, {"Content-Type": "text/plain"});
-            response.end('<html lang="en">' +
-                '<head>' +
-                '<title>demo</title>' +
-                '<style type="text/css">' +
-                'h1{color: red}' +
-                'p span{color: blue}' +
-                '</style>' +
-                '</head>' +
-                '<body>' +
-                '<h1>表TI</h1>' +
-                '<p><span>在呢</span></p>' +
-                '</body>' +
-                '</html>')
+            response.end(`<html lang="en">
+<head>
+<title>demo</title>
+<style type="text/css">
+body h3{color: rebeccapurple};
+body p{color: aqua}
+</style>
+</head>
+<body>
+<h3>hello</h3>
+<p>world</p>
+</body>
+</html>`)
         })
 })
     .listen(8080)
