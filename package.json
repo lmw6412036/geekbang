@@ -34,5 +34,8 @@
     "commitizen": {
       "path": "cz-conventional-changelog"
     }
+  },
+  "dependencies": {
+    "css": "^3.0.0"
   }
 }
