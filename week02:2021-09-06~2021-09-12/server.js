@@ -11,14 +11,14 @@ http.createServer((request, response) => {
             response.end(`<html lang="en">
 <head>
 <title>demo</title>
-<style type="text/css">
-body h3{color: rebeccapurple};
-body p{color: aqua}
+<style>
+body h3#h3{color: rebeccapurple;}
+body p.p{color: aqua;}
 </style>
 </head>
 <body>
-<h3>hello</h3>
-<p>world</p>
+<h3 id="h3">hello</h3>
+<p class="p">world</p>
 </body>
 </html>`)
         })

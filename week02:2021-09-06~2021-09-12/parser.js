@@ -112,7 +112,7 @@ function emit(token) {
 
         element.tagName = token.tagName;
 
-        for (let key of token) {
+        for (let key in token) {
             if (key !== 'type' && key !== 'tagName') {
                 element.attributes.push({
                     name: key,
@@ -266,7 +266,7 @@ function attributeName(c) {
 
     } else {
         currentAttribute.name += c;
-        return afterAttributeName
+        return attributeName
     }
 }
 
@@ -360,10 +360,11 @@ function selfClosingStartTag(c) {
 }
 
 exports.parseHTML = function (html) {
-
+    console.log('html', html);
     let state = data;
-    for (const htmlElement of html) {
-        state = state(htmlElement);
+    for (let i = 0; i < html.length; i++) {
+        let char = html.charAt(i);
+        state = state(char);
     }
     state = state(EOF);
 }
