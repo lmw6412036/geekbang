@@ -102,7 +102,6 @@ function compare(sp1, sp2) {
 
 function emit(token) {
     let top = stack[stack.length - 1];
-
     if (token.type === 'startTag') {
         let element = {
             type: 'element',
@@ -154,7 +153,6 @@ function emit(token) {
 }
 
 function data(c) {
-    console.log('char', c);
     if (c === '<') return tagOpen;
     else if (c === EOF) {
         emit({
@@ -360,7 +358,6 @@ function selfClosingStartTag(c) {
 }
 
 exports.parseHTML = function (html) {
-    console.log('html', html);
     let state = data;
     for (let i = 0; i < html.length; i++) {
         let char = html.charAt(i);

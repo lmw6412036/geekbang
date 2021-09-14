@@ -12,8 +12,8 @@ http.createServer((request, response) => {
 <head>
 <title>demo</title>
 <style>
-body h3#h3{color: rebeccapurple;}
-body p.p{color: aqua;}
+body #h3{color: rebeccapurple;}
+body .p{color: aqua;}
 </style>
 </head>
 <body>
