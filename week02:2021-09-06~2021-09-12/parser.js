@@ -123,7 +123,8 @@ function emit(token) {
         computeCSS(element);
 
         top.children.push(element);
-        element.parent = top;
+        // 循环引用
+        // element.parent = top;
 
         if (!token.isSelfClosing) {
             stack.push(element)
@@ -364,4 +365,5 @@ exports.parseHTML = function (html) {
         state = state(char);
     }
     state = state(EOF);
+    return stack[0];
 }

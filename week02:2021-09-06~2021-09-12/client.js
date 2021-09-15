@@ -14,5 +14,6 @@ const {parseHTML} = require("./parser");
         }
     });
     let response = await request.send();
-    parseHTML(response.body);
+    const dom = parseHTML(response.body);
+    console.log(JSON.stringify(dom, null, '    '));
 })()
