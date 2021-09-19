@@ -12,13 +12,29 @@ http.createServer((request, response) => {
 <head>
 <title>demo</title>
 <style>
-body #h3{color: rebeccapurple;}
-body .p{color: aqua;}
+    div {
+        border:solid 1px black;
+    }
+    #main{
+        align-items:center;display:flex;width:500px;justify-content:space-around;
+    }
+    .c1{
+        flex:1;width:100px;height:70px;
+    }
+    .c2{
+        width:200px;height:50px;
+    }
+    .c3{
+        width:200px;height:100px;
+    }
 </style>
 </head>
 <body>
-<h3 id="h3">hello</h3>
-<p class="p">world</p>
+<div id="main">
+    <div class="c1"></div>
+    <div class="c2"></div>
+    <div class="c3"></div>
+</div>
 </body>
 </html>`)
         })
