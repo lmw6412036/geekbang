@@ -12,20 +12,20 @@ http.createServer((request, response) => {
 <head>
 <title>demo</title>
 <style>
-    div {
-        border:solid 1px black;
-    }
     #main{
-        align-items:center;display:flex;width:500px;justify-content:space-around;
+        display:flex;
+        width: 500px;
+        height: 300px;
+        background-color: rgb(255,255,255);
     }
     .c1{
-        flex:1;width:100px;height:70px;
+        width: 200px;
+        height: 100px;
+        background-color: rgb(255,0,0);
     }
     .c2{
-        width:200px;height:50px;
-    }
-    .c3{
-        width:200px;height:100px;
+        flex: 1;
+        background-color: rgb(0,255,0);
     }
 </style>
 </head>
@@ -33,7 +33,6 @@ http.createServer((request, response) => {
 <div id="main">
     <div class="c1"></div>
     <div class="c2"></div>
-    <div class="c3"></div>
 </div>
 </body>
 </html>`)
