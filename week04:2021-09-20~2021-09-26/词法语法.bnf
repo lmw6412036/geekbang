@@ -1,0 +1,43 @@
+InputElement ::= WhiteSpace | LineTerminator | Comment | Token
+
+WhiteSpace ::= " " | "　"
+
+LineTerminator ::= "\r" | "\n"
+
+Comment ::= SingleLineComment | MultilLineComment
+SingleLineComment ::= "/" "/" <any>*
+MultilLineComment ::= "/" "*" ([^*] | "*" [^/])* "*" "/"
+
+Token ::= Literal | Keywords | Identifier | Punctuator
+
+Literal ::= NumberLiteral | BooleanLiteral | StringLiteral | NullLiteral
+NumberLiteral ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+BooleanLiteral ::= "true" | "false"
+StringLiteral ::= DoubleStringCharacter | SingleStringCharacters
+DoubleStringCharacter ::= "\"" <any>* "\""
+SingleStringCharacters ::= "'" <any>* "'"
+NullLiteral ::= "null"
+
+
+Keywords ::= "if" | "else" | "for" | "in" | "function" | ...
+
+Identifier ::= IdentifierName IdentifierPart
+IdentifierName ::= $ | _ | a...z | A...Z
+IdentifierPart ::= (a...z | A...Z)*
+
+Punctuator ::= "+" | "-" | "*" | "/" | ...
+
+Program ::= Statement+
+
+Statement ::= ExpressionStatement | IfStatement | TryStatement | Block
+IfStatement ::= "if" "(" Expression ")" Statement
+Block ::= "{" Statement "}"
+TryStatement ::= "try" "{" Statement+ "}" "catch" "(" Expression ")" "{" Statement+ "}"
+ExpressionStatement ::= Expression ";"
+
+Expression ::= AdditiveExpression
+
+AdditiveExpression ::= MultiplicativeExpression | AdditiveExpression ("+" | "-") MultiplicativeExpression
+MultiplicativeExpression ::=  UnaryExpression | MultiplicativeExpression ("*" | "/") UnaryExpression
+UnaryExpression ::= PrimaryExpression | ("+" | "-" | "typeof") PrimaryExpression
+PrimaryExpression ::= "(" Expression ")" | Literal | Identifier
