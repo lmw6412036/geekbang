@@ -24,7 +24,7 @@
 
             let length = 0;
 
-            let regexp = source[name].replace(/\<([^>]+)\>/, (str, $1) => {
+            let regexp = source[name].replace(/\<([^>]+)\>/g, (str, $1) => {
                 this.table.set(start + length, $1);
 
                 length++
@@ -83,6 +83,13 @@
                 break;
         }
     }
+
+
+    scan(`for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 4; j++) {
+            console.log(i * j);
+        }
+    }`);
 </script>
 </body>
 </html>
