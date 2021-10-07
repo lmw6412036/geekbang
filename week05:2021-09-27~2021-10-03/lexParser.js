@@ -51,7 +51,7 @@ class XRegExp {
     }
 }
 
-function* scan(str) {
+export function* scan(str) {
     let regexp = new XRegExp({
         InputElement: '<Whitespace>|<LineTerminator>|<Comments>|<Token>',
         Whitespace: / /,
@@ -102,6 +102,10 @@ function* scan(str) {
                 type: 'Identifier',
                 name: r[0]
             }
+        } else if (r.Keywords) {
+            yield {
+                type: r[0]
+            }
         } else if (r.Punctuator) {
             yield {
                 type: r[0]
@@ -118,7 +122,3 @@ function* scan(str) {
         type: "EOF"
     }
 }
-
-
-let step = scan(`var a=1;`);
-console.log(step.next())

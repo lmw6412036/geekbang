@@ -38,7 +38,7 @@ const syntax = {
     MultiplicativeExpression: [
         ['PrimaryExpression'],
         ['MultiplicativeExpression', '*', 'PrimaryExpression'],
-        ['MultiplicativeExpression', '*', 'PrimaryExpression'],
+        ['MultiplicativeExpression', '/', 'PrimaryExpression'],
     ],
     PrimaryExpression: [
         ['(', 'Expression', ')'],
@@ -125,7 +125,7 @@ function parse(source) {
                 children: children.reverse()
             }
         } else {
-            throw new Error('unexpected token');
+            throw new Error('unexpected token' + state.$reduceType);
         }
     }
 
@@ -141,6 +141,7 @@ function parse(source) {
     }
 
     for (let symbol of scan(source)) {
+        console.log(symbol);
         shift(symbol);
     }
 
@@ -179,13 +180,9 @@ function evaluate(node) {
 
 let source = `var a=1;`;
 
-for (let symbol of scan(source)) {
-    console.log(symbol);
-}
 
-
-//let tree = parse(source);
-//evaluate(tree);
+let tree = parse(source);
+evaluate(tree);
 
 
 
