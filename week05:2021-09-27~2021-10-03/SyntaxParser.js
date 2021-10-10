@@ -25,10 +25,10 @@ const syntax = {
         ['function', 'Identifier', '(', ')', '{', 'StatementList', '}']
     ],
     ExpressionStatement: [
-        'Expression', ';'
+        ['Expression', ';']
     ],
     Expression: [
-        'AdditiveExpression'
+        ['AdditiveExpression']
     ],
     AdditiveExpression: [
         ['MultiplicativeExpression'],
@@ -67,6 +67,7 @@ function closure(state) {
     }
     while (queue.length) {
         let symbol = queue.shift();
+        // console.log('symbol', symbol);
         if (syntax[symbol]) {
             for (let rule of syntax[symbol]) {
                 if (!state[rule[0]]) {
@@ -101,11 +102,13 @@ const end = {
     $isEnd: true
 }
 
-const start = {
+let start = {
     Program: end
 }
 
 closure(start);
+
+console.log(start);
 
 function parse(source) {
     let stack = [start];
@@ -125,7 +128,7 @@ function parse(source) {
                 children: children.reverse()
             }
         } else {
-            throw new Error('unexpected token' + state.$reduceType);
+            throw new Error('unexpected token')
         }
     }
 
@@ -141,7 +144,6 @@ function parse(source) {
     }
 
     for (let symbol of scan(source)) {
-        console.log(symbol);
         shift(symbol);
     }
 
@@ -164,7 +166,7 @@ let evaluator = {
         return evaluate(node.children[0]);
     },
     VariableDeclaration(node) {
-        console.log('VariableDeclaration', node.children[0].name);
+        console.log('VariableDeclaration', node, node.children[1].name);
     },
     EOF() {
         return null;
@@ -178,10 +180,11 @@ function evaluate(node) {
 }
 
 
-let source = `var a=1;`;
+let source = `var a;`;
 
 
 let tree = parse(source);
+
 evaluate(tree);
 
 

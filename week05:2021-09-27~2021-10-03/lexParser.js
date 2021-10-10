@@ -122,3 +122,7 @@ export function* scan(str) {
         type: "EOF"
     }
 }
+
+for (let symbol of scan(`var a;`)) {
+    console.log(symbol);
+}
