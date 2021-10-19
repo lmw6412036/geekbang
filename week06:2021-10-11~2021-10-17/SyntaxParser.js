@@ -28,7 +28,19 @@ const syntax = {
         ['Expression', ';']
     ],
     Expression: [
-        ['AdditiveExpression']
+        ['AssignmentExpression']
+    ],
+    AssignmentExpression: [
+        ['LeftHandSideExpression', '=', 'LogicalORExpression'],
+        ['LogicalORExpression']
+    ],
+    LogicalORExpression: [
+        ['LogicalANDExpression'],
+        ['LogicalORExpression', '||', 'LogicalANDExpression']
+    ],
+    LogicalANDExpression: [
+        ['AdditiveExpression'],
+        ['LogicalANDExpression', '&&', 'AdditiveExpression']
     ],
     AdditiveExpression: [
         ['MultiplicativeExpression'],
@@ -36,9 +48,26 @@ const syntax = {
         ['AdditiveExpression', '-', 'MultiplicativeExpression']
     ],
     MultiplicativeExpression: [
+        ['LeftHandSideExpression'],
+        ['MultiplicativeExpression', '*', 'LeftHandSideExpression'],
+        ['MultiplicativeExpression', '/', 'LeftHandSideExpression'],
+    ],
+    LeftHandSideExpression: [
+        ['CallExpression'],
+        ['NewExpression']
+    ],
+    CallExpression: [
+        ['MemberExpression', 'Arguments'],
+        ['CallExpression', 'Arguments']
+    ],
+    NewExpression: [
+        ['MemberExpression'],
+        ['new', 'NewExpression']
+    ],
+    MemberExpression: [
         ['PrimaryExpression'],
-        ['MultiplicativeExpression', '*', 'PrimaryExpression'],
-        ['MultiplicativeExpression', '/', 'PrimaryExpression'],
+        ['PrimaryExpression', '.', 'Identifier'],
+        ['PrimaryExpression', '[', 'Expression', ']']
     ],
     PrimaryExpression: [
         ['(', 'Expression', ')'],
@@ -53,7 +82,20 @@ const syntax = {
         ['RegularExpressionLiteral'],
         ['ObjectLiteral'],
         ['ArrayLiteral']
-    ]
+    ],
+    ObjectLiteral: [
+        ['{', '}'],
+        ['{', 'PropertyList', '}']
+    ],
+    PropertyList: [
+        ['Property'],
+        ['PropertyList', ',', 'Property']
+    ],
+    Property: [
+        ['StringLiteral', ':', 'AdditiveExpression'],
+        ['Identifier', ',', 'AdditiveExpression']
+    ],
+
 }
 
 let hash = {};
@@ -64,7 +106,7 @@ function closure(state) {
     let queue = [];
     for (let symbol in state) {
         if (symbol.match(/^\$/)) {
-            return;
+            continue;
         }
         queue.push(symbol);
     }
@@ -91,7 +133,7 @@ function closure(state) {
 
     for (let symbol in state) {
         if (symbol.match(/^\$/)) {
-            return;
+            continue;
         }
         let key = JSON.stringify(state[symbol]);
         if (hash[key]) {
@@ -111,9 +153,9 @@ let start = {
 
 closure(start);
 
-console.log(start);
+// console.log(start);
 
-function parse(source) {
+export function parse(source) {
     let stack = [start];
     let symbolStack = [];
 
@@ -154,115 +196,6 @@ function parse(source) {
     return reduce();
 }
 
-let evaluator = {
-    Program(node) {
-        return evaluate(node.children[0]);
-    },
-    StatementList(node) {
-        if (node.children.length === 1)
-            return evaluate(node.children[0]);
-        else {
-            evaluate(node.children[0]);
-            return evaluate(node.children[1]);
-        }
-    },
-    Statement(node) {
-        return evaluate(node.children[0]);
-    },
-    VariableDeclaration(node) {
-        console.log('VariableDeclaration', node, node.children[1].name);
-    },
-    ExpressionStatement(node) {
-        return evaluate(node.children[0])
-    },
-    Expression(node) {
-        return evaluate(node.children[0]);
-    },
-    AdditiveExpression(node) {
-        if (node.children.length === 1)
-            return evaluate(node.children[0]);
-    },
-    MultiplicativeExpression(node) {
-        if (node.children.length === 1)
-            return evaluate(node.children[0]);
-    },
-    PrimaryExpression(node) {
-        if (node.children.length === 1)
-            return evaluate(node.children[0]);
-    },
-    Literal(node) {
-        return evaluate(node.children[0]);
-    },
-    NumericLiteral(node) {
-        let str = node.value;
-        let l = str.length;
-        let value = 0;
-        let n = 10;
-
-        if (str.match(/^0b/)) {
-            n = 2;
-            l -= 2;
-        } else if (str.match(/^0o/)) {
-            n = 8;
-            l -= 2;
-        } else if (str.match(/^0x/)) {
-            n = 16;
-            l -= 2;
-        }
-
-        while (l--) {
-            let c = str.charCodeAt(str.length - l - 1);
-            if (c >= 'a'.charCodeAt(0)) {
-                c = c - 'a'.charCodeAt(0) + 10;
-            } else if (c >= 'A'.charCodeAt(0)) {
-                c = c - 'A'.charCodeAt(0) + 10;
-            } else if (c >= '0'.charCodeAt(0)) {
-                c = c - '0'.charCodeAt(0);
-            }
-
-            value = value * n + c;
-        }
-        console.log(value);
-        return Number(node.value);
-    },
-    StringLiteral(node) {
-        let i = 1;
-        let ans = [];
-        for (let j = 1; j < node.value.length - 1; j++) {
-            if (node.value[j] === '\\') {
-                j++;
-                let c = node.value[j];
-                let map = {
-                    "\"": "\"",
-                    "\'": "\'",
-                    "\\": "\\",
-                    "0": String.fromCharCode(0x0000),
-                    "b": String.fromCharCode(0x0008),
-                    "f": String.fromCharCode(0x000C),
-                    "n": String.fromCharCode(0x000A),
-                    "r": String.fromCharCode(0x000D),
-                    "t": String.fromCharCode(0x0009),
-                    "v": String.fromCharCode(0x000B),
-                }
-                if (c in map) {
-                    ans.push(map[c]);
-                } else ans.push(c);
-            } else
-                ans.push(node.value[j])
-        }
-        return ans.join('');
-    },
-    EOF() {
-        return null;
-    }
-
-};
-
-function evaluate(node) {
-    if (evaluator[node.type])
-        return evaluator[node.type](node);
-}
-
 
 // let source = `"abs";`;
 
@@ -272,9 +205,5 @@ function evaluate(node) {
 evaluate(tree);*/
 
 
-document.getElementById('runBtn').addEventListener('click', function () {
-    let source = document.getElementById('source').value;
-    let tree = parse(source);
-    evaluate(tree);
-})
+
 
