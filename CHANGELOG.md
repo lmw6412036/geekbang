@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/lmw6412036/geekbang/compare/v1.3.2...v1.4.0) (2021-10-24)
+
+
+### Bug修复
+
+* week04 ([c5e3873](https://github.com/lmw6412036/geekbang/commit/c5e3873110330396098ad489ad6bb537a880741f))
+* week04 ([e9bf1a3](https://github.com/lmw6412036/geekbang/commit/e9bf1a330055a39086df8fa6fc2ee033a721e349))
+* week04 ([b69b6e2](https://github.com/lmw6412036/geekbang/commit/b69b6e28699b81a95dfb4c7203d335eafad6edf7))
+* week04 ([753def7](https://github.com/lmw6412036/geekbang/commit/753def7c41c3c8f836b77d1f7e025c72a5af9275))
+
+
+### 新特性、新功能
+
+* week04 ([9f0bbde](https://github.com/lmw6412036/geekbang/commit/9f0bbde379ffae85f86d03f30430f26c983c32a4))
+* week06 ([582e42c](https://github.com/lmw6412036/geekbang/commit/582e42c2f716df9136c71ef3e454c1b0c1591d79))
+* week06 ([df28ce0](https://github.com/lmw6412036/geekbang/commit/df28ce05327a7661289a8b4e1568cd4b80e6be47))
+* week07 ([23d5def](https://github.com/lmw6412036/geekbang/commit/23d5def8844f998455251bf655eb57a1493e7c4f))
+
 ### [1.3.2](https://github.com/lmw6412036/geekbang/compare/v1.3.1...v1.3.2) (2021-09-26)
 
 ### [1.3.1](https://github.com/lmw6412036/geekbang/compare/v1.3.0...v1.3.1) (2021-09-25)
