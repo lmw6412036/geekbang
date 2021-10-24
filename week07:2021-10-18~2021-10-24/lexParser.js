@@ -64,8 +64,8 @@ export function* scan(str) {
         StringLiteral: /\"(?:[^"\n]|\\[\s\S])*\"|\'(?:[^'\n]|\\[\s\S])*\'/,
         NullLiteral: /null/,
         Identifier: /[a-zA-Z_$][a-zA-Z0-9_$]*/,
-        Keywords: /if|else|for|function|let|var|new/,
-        Punctuator: /\+|\,|\?|\:|\{|\}|\.|\(|\=|\<|\+\+|\=\=|\=\>|\*|\)|\[|\]|\|\||\&\&|;/
+        Keywords: /if|else|for|function|let|var|new|while/,
+        Punctuator: /\+|\-|\,|\?|\:|\{|\}|\.|\(|\=|\<|\+\+|\=\=|\=\>|\*|\)|\[|\]|\|\||\&\&|;/
     }, 'g', 'InputElement');
 
     while (regexp.lastIndex < str.length) {

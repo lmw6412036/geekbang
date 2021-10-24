@@ -1,4 +1,14 @@
-import {ExecutionContent, Realm, Reference} from "./runtime.js";
+import {
+    ExecutionContent,
+    JSBoolean,
+    JSNull,
+    JSNumber,
+    JSObject,
+    JSString,
+    JSUndefined,
+    Realm,
+    Reference
+} from "./runtime.js";
 
 export class Evaluator {
     constructor() {
@@ -18,6 +28,32 @@ export class Evaluator {
         return this.evaluate(node.children[0]);
     }
 
+    IfStatement(node) {
+        console.log(node);
+        let condition = this.evaluate(node.children[2]);
+        if (condition instanceof Reference) {
+            condition = condition.get();
+        }
+        if (condition.toBoolean().value) {
+            //debugger;
+            return this.evaluate(node.children[4]);
+        }
+    }
+
+    WhileStatement(node) {
+        while (true) {
+            let condition = this.evaluate(node.children[2]);
+            if (condition instanceof Reference) {
+                condition = condition.get();
+            }
+            if (condition.toBoolean().value) {
+                //debugger;
+                return this.evaluate(node.children[4]);
+            } else
+                break;
+        }
+    }
+
     StatementList(node) {
         if (node.children.length === 1)
             return this.evaluate(node.children[0]);
@@ -34,7 +70,7 @@ export class Evaluator {
     VariableDeclaration(node) {
         console.log('VariableDeclaration', node, node.children[1].name);
         let runningEC = ecs[ecs.length - 1];
-        runningEC.lexicalEnvironment.add(node.children[1].name);
+        runningEC.lexicalEnvironment[node.children[1].name] = new JSUndefined();
     }
 
     ExpressionStatement(node) {
@@ -48,6 +84,25 @@ export class Evaluator {
     AdditiveExpression(node) {
         if (node.children.length === 1)
             return this.evaluate(node.children[0]);
+        else {
+            let left = this.evaluate(node.children[0]);
+            let right = this.evaluate(node.children[2]);
+            if (left instanceof Reference) left = left.get();
+            if (right instanceof Reference) right = right.get();
+
+            if (node.children[1].type === '+') {
+                return new JSNumber(left.value + right.value)
+            }
+            if (node.children[1].type === '-') {
+                return new JSNumber(left.value - right.value)
+            }
+            if (node.children[1].type === '*') {
+                return new JSNumber(left.value * right.value)
+            }
+            if (node.children[1].type === '/') {
+                return new JSNumber(left.value / right.value)
+            }
+        }
     }
 
     MultiplicativeExpression(node) {
@@ -94,7 +149,7 @@ export class Evaluator {
             value = value * n + c;
         }
         console.log(value);
-        return Number(node.value);
+        return new JSNumber(value);
     }
 
     StringLiteral(node) {
@@ -122,14 +177,14 @@ export class Evaluator {
             } else
                 ans.push(node.value[j])
         }
-        return ans.join('');
+        return new JSString(ans);
     }
 
     ObjectLiteral(node) {
         //{"a":1}
         if (node.children.length === 2) return {}
         if (node.children.length === 3) {
-            let object = new Map();
+            let object = new JSObject();
             this.PropertyList(node.children[1], object);
             console.log(object);
             return object;
@@ -159,6 +214,16 @@ export class Evaluator {
             enumerable: true,
             configurable: true
         });
+    }
+
+    BooleanLiteral(node) {
+        if (node.value === 'false')
+            return new JSBoolean(false)
+        return new JSBoolean(true)
+    }
+
+    NullLiteral() {
+        return new JSNull()
     }
 
     AssignmentExpression(node) {
@@ -239,6 +304,12 @@ export class Evaluator {
         let ecs = this.ecs;
         let runningECS = ecs[ecs.length - 1];
         return new Reference(runningECS.lexicalEnvironment, node.name);
+    }
+
+    Block(node) {
+        if (node.children.length === 2) {
+            return ''
+        }
     }
 
     EOF() {

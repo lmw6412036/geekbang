@@ -11,8 +11,16 @@ const syntax = {
     Statement: [
         ['ExpressionStatement'],
         ['IfStatement'],
+        ['WhileStatement'],
         ['VariableDeclaration'],
-        ['FunctionDeclaration']
+        ['FunctionDeclaration'],
+        ['Block']
+    ],
+    WhileStatement: [
+        ['while', '(', 'Expression', ')', 'Statement']
+    ],
+    Block: [
+        ['{', 'StatementList', '}']
     ],
     IfStatement: [
         ['if', '(', 'Expression', ')', 'Statement']
