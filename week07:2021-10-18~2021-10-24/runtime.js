@@ -166,10 +166,57 @@ export class JSSymbol extends JSValue {
 }
 
 export class EnvironmentRecord {
-    constructor() {
-        this.thisValue;
+    constructor(outer) {
         this.variables = new Map();
-        this.outer = null;
+        this.outer = outer;
     }
 
+    add(name) {
+        this.variables.set(name, new JSUndefined())
+    }
+
+    get(name) {
+        if (this.variables.has(name))
+            return this.variables.get(name);
+        else if (this.outer) {
+            return this.outer.get(name);
+        }
+        return new JSUndefined()
+    }
+
+    set(name, value = new JSUndefined()) {
+        if (this.variables.has(name)) {
+            this.variables.set(name, value)
+        } else if (this.outer.has(name)) {
+            this.outer.set(name, value)
+        } else
+            this.variables.set(name, value)
+    }
+}
+
+export class ObjectEnvironmentRecord {
+    constructor(object, outer) {
+        this.outer = outer;
+        this.object = object;
+    }
+
+    add(name) {
+        this.object.set(name, new JSUndefined())
+    }
+
+    set(name, value = new JSUndefined()) {
+        this.object.set(name, value);
+    }
+
+    get(name) {
+        return this.object.get(name);
+    }
+}
+
+export class CompletionRecord {
+    constructor(type, value, target) {
+        this.type = type || 'normal';
+        this.value = value || new JSUndefined();
+        this.target = target || null
+    }
 }

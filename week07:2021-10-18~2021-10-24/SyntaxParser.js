@@ -14,13 +14,22 @@ const syntax = {
         ['WhileStatement'],
         ['VariableDeclaration'],
         ['FunctionDeclaration'],
-        ['Block']
+        ['Block'],
+        ['BreakStatement'],
+        ['ContinueStatement']
     ],
     WhileStatement: [
         ['while', '(', 'Expression', ')', 'Statement']
     ],
+    BreakStatement: [
+        ['break', ';']
+    ],
+    ContinueStatement: [
+        ['continue', ';']
+    ],
     Block: [
-        ['{', 'StatementList', '}']
+        ['{', 'StatementList', '}'],
+        ['{', '}']
     ],
     IfStatement: [
         ['if', '(', 'Expression', ')', 'Statement']

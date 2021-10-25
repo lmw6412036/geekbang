@@ -1,4 +1,5 @@
 import {
+    CompletionRecord, EnvironmentRecord,
     ExecutionContent,
     JSBoolean,
     JSNull,
@@ -48,18 +49,32 @@ export class Evaluator {
             }
             if (condition.toBoolean().value) {
                 //debugger;
-                return this.evaluate(node.children[4]);
+                let record = this.evaluate(node.children[4]);
+                if (record.type === 'continue')
+                    continue;
+                if (record.type === 'break')
+                    return new CompletionRecord('normal')
             } else
-                break;
+                return new CompletionRecord('normal')
         }
+    }
+
+    BreakStatement() {
+        return new CompletionRecord('break');
+    }
+
+    ContinueStatement() {
+        return new CompletionRecord('continue');
     }
 
     StatementList(node) {
         if (node.children.length === 1)
             return this.evaluate(node.children[0]);
         else {
-            this.evaluate(node.children[0]);
-            return this.evaluate(node.children[1]);
+            let record = this.evaluate(node.children[0]);
+            if (record.type === 'normal')
+                return this.evaluate(node.children[1]);
+            return record;
         }
     }
 
@@ -70,11 +85,16 @@ export class Evaluator {
     VariableDeclaration(node) {
         console.log('VariableDeclaration', node, node.children[1].name);
         let runningEC = ecs[ecs.length - 1];
-        runningEC.lexicalEnvironment[node.children[1].name] = new JSUndefined();
+        runningEC.lexicalEnvironment.add(node.children[1].name);
+        return new CompletionRecord('normal', new JSUndefined());
     }
 
     ExpressionStatement(node) {
-        return this.evaluate(node.children[0])
+        let result = this.evaluate(node.children[0]);
+        if (result instanceof Reference) {
+            result = result.get();
+        }
+        return new CompletionRecord('normal', result);
     }
 
     Expression(node) {
@@ -306,10 +326,22 @@ export class Evaluator {
         return new Reference(runningECS.lexicalEnvironment, node.name);
     }
 
+
     Block(node) {
         if (node.children.length === 2) {
             return ''
         }
+
+        let runningEC = this.ecs[this.ecs.length - 1];
+        let newEC = new ExecutionContent(
+            runningEC.realm,
+            new EnvironmentRecord(runningEC.lexicalEnvironment),
+            runningEC.variableEnvironment
+        )
+        this.ecs.push(newEC);
+        let result = this.evaluate(node.children[1]);
+        this.ecs.pop()
+        return result;
     }
 
     EOF() {
