@@ -6,7 +6,7 @@ import {
     JSNumber,
     JSObject,
     JSString,
-    JSUndefined,
+    JSUndefined, ObjectEnvironmentRecord,
     Realm,
     Reference
 } from "./runtime.js";
@@ -14,10 +14,31 @@ import {
 export class Evaluator {
     constructor() {
         this.realm = new Realm();
-        this.globalObject = {};
+        this.globalObject = new JSObject();
+        this.globalObject.set('log', new JSObject())
+        this.globalObject.get('log').call = args => {
+            console.log(args);
+        }
         this.ecs = [new ExecutionContent(
             this.realm,
+            new ObjectEnvironmentRecord(this.globalObject),
+            new ObjectEnvironmentRecord(this.globalObject)
         )];
+    }
+
+    evaluateModule(node) {
+        let globalEC = this.ecs[0];
+        let newEC = new ExecutionContent(
+            this.realm,
+            new ObjectEnvironmentRecord(globalEC.globalObject),
+            new ObjectEnvironmentRecord(globalEC.globalObject)
+        )
+
+        this.ecs.push(newEC)
+        let result = this.evaluate(node);
+        this.ecs.pop();
+        return result;
+
     }
 
     evaluate(node) {
@@ -326,6 +347,26 @@ export class Evaluator {
         return new Reference(runningECS.lexicalEnvironment, node.name);
     }
 
+    Arguments(node) {
+        if (node.children.length === 2) return []
+        else return this.evaluate(node.children[1]);
+    }
+
+    ArgumentList(node) {
+        if (node.children.length === 1) {
+            let result = this.evaluate(node.children[0])
+            if (result instanceof Reference) {
+                result = result.get();
+            }
+            return [result];
+        } else {
+            let result = this.evaluate(node.children[2]);
+            if (result instanceof Reference) {
+                result = result.get();
+            }
+            return this.evaluate(node.children[0]).concat(result);
+        }
+    }
 
     Block(node) {
         if (node.children.length === 2) {
@@ -342,6 +383,28 @@ export class Evaluator {
         let result = this.evaluate(node.children[1]);
         this.ecs.pop()
         return result;
+    }
+
+    FunctionDeclaration(node) {
+        let name = node.children[1].name;
+        let code = node.children[node.children.length - 2];
+        let func = new JSObject();
+        func.call = args => {
+            let newEC = new ExecutionContent(
+                this.realm,
+                new EnvironmentRecord(func.environment),
+                new EnvironmentRecord(func.environment)
+            )
+
+            this.ecs.push(newEC);
+            this.evaluate(code);
+            this.ecs.pop();
+        }
+        let runningEC = this.ecs[this.ecs.length - 1];
+        runningEC.lexicalEnvironment.add(name);
+        runningEC.lexicalEnvironment.set(name, func);
+        func.environment = runningEC.lexicalEnvironment;
+        return new CompletionRecord('normal');
     }
 
     EOF() {

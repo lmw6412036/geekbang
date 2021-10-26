@@ -117,8 +117,25 @@ export class JSObject extends JSValue {
         this.prototype = null
     }
 
+    set(name, value) {
+        this.setProperty(name, {
+            value,
+            writable: true,
+            enumerable: true,
+            configurable: true
+        })
+    }
+
+    get(name) {
+        return this.getProperty(name)
+    }
+
     setProperty(name, attributes) {
         this.properties.set(name, attributes);
+    }
+
+    getProperty(name) {
+        return this.properties.get(name);
     }
 
     setPrototype(proto) {

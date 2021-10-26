@@ -77,6 +77,14 @@ const syntax = {
         ['MemberExpression', 'Arguments'],
         ['CallExpression', 'Arguments']
     ],
+    Arguments: [
+        ['(', ')'],
+        ['(', 'ArgumentList', ')']
+    ],
+    ArgumentList: [
+        ['AssignmentExpression'],
+        ['ArgumentList', ',', 'AssignmentExpression']
+    ],
     NewExpression: [
         ['MemberExpression'],
         ['new', 'NewExpression']
