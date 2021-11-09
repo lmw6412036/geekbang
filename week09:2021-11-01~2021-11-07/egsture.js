@@ -1,12 +1,18 @@
 const element = document.documentElement;
 
 
-export function dispatch(type, properties) {
-    let event = new Event(type);
-    for (let name in properties) {
-        event[name] = properties[name];
+export class Dispatcher {
+    constructor(element) {
+        this.element = element;
     }
-    element.dispatchEvent(event);
+
+    dispatch(type, properties) {
+        let event = new Event(type);
+        for (let name in properties) {
+            event[name] = properties[name];
+        }
+        this.element.dispatchEvent(event);
+    }
 }
 
 export class Listener {
@@ -84,8 +90,8 @@ export class Listener {
 }
 
 export class Recognizer {
-    constructor(dispatch) {
-        this.dispatch = dispatch;
+    constructor(dispatcher) {
+        this.dispatcher = dispatcher;
     }
 
     start(point, context) {
@@ -107,7 +113,7 @@ export class Recognizer {
             context.isPan = false;
             context.isTap = false;
             context.handler = null;
-            this.dispatch('press', {});
+            this.dispatcher.dispatch('press', {});
         }, 500)
     }
 
@@ -120,7 +126,7 @@ export class Recognizer {
             context.isTap = false;
             context.isVertical = Math.abs(dx) < Math.abs(dy)
             console.log('panstart');
-            this.dispatch('panstart', {
+            this.dispatcher.dispatch('panstart', {
                 startX, startY,
                 clientX: point.clientX,
                 clientY: point.clientY,
@@ -132,7 +138,7 @@ export class Recognizer {
         if (isPan) {
             console.log(dx, dy);
             console.log('pan');
-            this.dispatch('pan', {
+            this.dispatcher.dispatch('pan', {
                 startX, startY,
                 clientX: point.clientX,
                 clientY: point.clientY,
@@ -150,12 +156,12 @@ export class Recognizer {
     end(point, context) {
         if (context.isTap) {
             console.log('tap');
-            this.dispatch('tap', {})
+            this.dispatcher.dispatch('tap', {})
             clearTimeout(context.handler);
         }
 
         if (context.isPress) {
-            this.dispatch('pressend', {});
+            this.dispatcher.dispatch('pressend', {});
             console.log('pressend')
         }
 
@@ -173,7 +179,7 @@ export class Recognizer {
 
 
         if (context.isPan) {
-            this.dispatch('panend', {
+            this.dispatcher.dispatch('panend', {
                 startX: context.startX, startY: context.startY,
                 clientX: point.clientX,
                 clientY: point.clientY,
@@ -184,11 +190,11 @@ export class Recognizer {
     }
 
     cancel(point, context) {
-        this.dispatch('cancel', {})
+        this.dispatcher.dispatch('cancel', {})
         clearTimeout(context.handler);
     }
 }
 
 export function enableGesture(element) {
-    new Listener(element, new Recognizer(dispatch));
+    new Listener(element, new Recognizer(new Dispatcher(element)));
 }
