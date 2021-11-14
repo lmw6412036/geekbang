@@ -6,8 +6,6 @@ import {ease} from "./ease";
 export class Carousel extends Component {
     constructor() {
         super()
-        this.attributes = Object.create(null);
-
     }
 
     render() {

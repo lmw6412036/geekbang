@@ -21,14 +21,18 @@ export function createElement(type, attributes, ...children) {
     return element;
 }
 
+export const STATE = Symbol('state');
+
+
 
 export class Component {
     constructor(type) {
         this.root = null;
+        this.attributes = Object.create(null);
     }
 
     setAttribute(name, value) {
-        this.root.setAttribute(name, value);
+        this.attributes[name] = value;
     }
 
     appendChild(child) {
@@ -37,6 +41,8 @@ export class Component {
     }
 
     mountTo(parent) {
+        if (!this.root)
+            this.render();
         parent.appendChild(this.root);
     }
 }
